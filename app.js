@@ -39,13 +39,32 @@ function faq(items = []) { return `<section class="faq"><div class="section-head
 
 function renderDashboard() {
   const deadlines = courseData.schedule.flatMap(week => week.events).filter(event => event.type === 'deadline').slice(0, 3);
-  const featuredGuests = courseData.guestLecturers.filter(guest => guest.featured).slice(0, 1);
-  return `${pageHeader('Course handbook · ' + courseData.course.term, 'Dashboard', 'Everything you need for the week, in one calm place.')}
-  <section class="dashboard-hero"><div class="welcome-card"><div><p class="term-label">${escapeHTML(courseData.course.term)}</p><h1>${escapeHTML(courseData.course.welcome)}</h1><p>${escapeHTML(courseData.course.description)}</p></div>${routeLink('brief-library', 'Explore portfolio briefs →')}</div><aside class="focus-card"><div><p class="card-label">This week’s focus</p><h2>${escapeHTML(courseData.schedule[0]?.title || 'Course updates')}</h2><p>${escapeHTML(courseData.schedule[0]?.events[0]?.description || '')}</p></div>${routeLink('schedule', 'View course schedule →')}</aside></section>
-  <div class="dashboard-grid"><section><div class="section-heading"><h2>Upcoming deadlines</h2>${routeLink('schedule', 'View all')}</div><div class="deadline-list">${deadlines.map(deadlineCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>Announcements</h2></div><div class="notice-list">${courseData.announcements.slice(0, 3).map(announcementCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>Guest lecture</h2>${routeLink('schedule', 'All sessions')}</div><div class="guest-grid">${featuredGuests.map(guestCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>Quick links</h2></div><div class="quick-links">${routeLink('group-project', 'Group project <span>→</span>')}${routeLink('final-portfolio', 'Portfolio checklist <span>→</span>')}${routeLink('resources', 'Course resources <span>→</span>')}${routeLink('feedback', 'Book feedback <span>→</span>')}</div></section></div>`;
+  const focus = courseData.schedule[0]?.events[0];
+  return `<section class="dashboard-masthead"><div class="dashboard-masthead-copy"><div><p class="dashboard-masthead-meta">${escapeHTML(courseData.course.term)} · Course handbook</p><h1>Content<br>Creation<br>&amp; Portfolio</h1><p>${escapeHTML(courseData.course.description)}</p></div><div>${routeLink('brief-library', 'Enter the brief library →')}</div></div><div class="dashboard-image-grid"><figure><img src="assets/images/brief-hotel.svg" alt="A coastal hotel portfolio brief"></figure><figure><img src="assets/images/brief-eyewear.svg" alt="An independent eyewear portfolio brief"></figure><figure><img src="assets/images/brief-skincare.svg" alt="A premium skincare portfolio brief"></figure></div></section>
+  <section class="dashboard-workbench"><article class="workbench-panel"><h2>This week</h2><div class="featured-session"><time>${escapeHTML(focus?.date || '')}</time><div><h3>${escapeHTML(focus?.title || 'Course updates')}</h3><p>${escapeHTML(focus?.description || '')}</p>${routeLink('schedule', 'Open calendar →')}</div></div></article><article class="workbench-panel"><h2>From the studio</h2><div class="dashboard-stack">${courseData.announcements.slice(0, 2).map(announcementCard).join('') || emptyState()}</div></article></section>
+  <div class="dashboard-columns"><section><div class="section-heading"><h2>Upcoming deadlines</h2>${routeLink('schedule', 'Calendar')}</div><div class="deadline-list">${deadlines.map(deadlineCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>Course rooms</h2></div><div class="quick-links">${routeLink('group-project', 'Group project <span>→</span>')}${routeLink('final-portfolio', 'Final portfolio <span>→</span>')}${routeLink('resources', 'Resources <span>→</span>')}${routeLink('feedback', 'Book feedback <span>→</span>')}</div></section></div>`;
+}
+function parseCourseDate(value) {
+  const [day, monthName] = value.split(' ');
+  const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(monthName);
+  return month < 0 ? null : { day: Number(day), month };
+}
+function calendarMonth(year, month) {
+  const events = courseData.schedule.flatMap(week => week.events.map(event => ({ ...event, week: week.week }))).filter(event => parseCourseDate(event.date)?.month === month);
+  const days = new Date(year, month + 1, 0).getDate();
+  const start = (new Date(year, month, 1).getDay() + 6) % 7;
+  const cells = Array.from({ length: start + days }, (_, index) => {
+    const day = index - start + 1;
+    if (index < start) return '<div class="calendar-cell empty"></div>';
+    const items = events.filter(event => parseCourseDate(event.date).day === day);
+    return `<div class="calendar-cell"><span class="calendar-date">${day}</span>${items.map(event => `<article class="calendar-event ${escapeHTML(event.type)}"><small>${escapeHTML(titleize(event.type))} · ${escapeHTML(event.time)}</small>${escapeHTML(event.title)}</article>`).join('')}</div>`;
+  });
+  while (cells.length % 7) cells.push('<div class="calendar-cell empty"></div>');
+  return `<section class="calendar-month"><header class="calendar-month-title"><h2>${new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month, 1))}</h2><span>${year}</span></header><div class="calendar-grid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => `<div class="calendar-day-name">${day}</div>`).join('')}${cells.join('')}</div></section>`;
 }
 function renderSchedule() {
-  return `${pageHeader('The semester', 'Course schedule', 'A week-by-week view of lectures, workshops, labs and deadlines. Open a week to see what is happening.')}
+  return `${pageHeader('The semester', 'Course schedule', 'See every lecture, workshop, guest session and deadline in the calendar. Open a week below for its full details.')}
+  <div class="calendar-legend"><span class="calendar-event lecture">Lecture</span><span class="calendar-event workshop">Workshop / lab</span><span class="calendar-event guest-lecture">Guest lecture</span><span class="calendar-event deadline">Deadline</span></div><section class="calendar-wrap">${[0, 1].map(month => calendarMonth(2026, month)).join('')}</section>
   <section class="timeline">${courseData.schedule.map((week, index) => `<details class="week" ${index === 0 ? 'open' : ''}><summary><span class="week-number">Week ${String(week.week).padStart(2, '0')}</span><h2>${escapeHTML(week.title)}</h2><span class="week-date">${escapeHTML(week.dateRange)}</span></summary><div class="week-body">${week.events.map(eventCard).join('')}</div></details>`).join('')}</section>
   <section style="margin-top:54px"><div class="section-heading"><h2>Guest lecturers</h2></div><div class="guest-grid">${courseData.guestLecturers.map(guestCard).join('')}</div></section>`;
 }
@@ -76,26 +95,15 @@ function showModal(content) { document.body.insertAdjacentHTML('beforeend', `<di
 function openBrief(id) { const brief = courseData.portfolioBriefs.find(item => item.id === id); if (!brief) return; showModal(`<span class="tag">${escapeHTML(brief.category)} · ${escapeHTML(brief.difficulty)}</span><h2>${escapeHTML(brief.title)}</h2><p>${escapeHTML(brief.description)}</p><h3>Client</h3><p>${escapeHTML(brief.client)}</p><h3>Background</h3><p>${escapeHTML(brief.background)}</p><h3>Challenge</h3><p>${escapeHTML(brief.challenge)}</p><h3>Goals</h3><ul>${brief.goals.map(goal => `<li>${escapeHTML(goal)}</li>`).join('')}</ul><h3>Audience</h3><p>${escapeHTML(brief.audience)}</p><h3>Creative freedom</h3><p>${escapeHTML(brief.creativeFreedom)}</p><h3>Portfolio value</h3><p>${escapeHTML(brief.portfolioValue)}</p>`); }
 function openScenario(id) { const scenario = courseData.groupProject.scenarios.find(item => item.id === id); if (!scenario) return; showModal(`<span class="tag">${escapeHTML(scenario.category)}</span><h2>${escapeHTML(scenario.title)}</h2><p>${escapeHTML(scenario.brief)}</p><h3>Skills developed</h3><ul>${scenario.skills.map(skill => `<li>${escapeHTML(skill)}</li>`).join('')}</ul><h3>Estimated workload</h3><p>${escapeHTML(scenario.workload)}</p>`); }
 function openGuest(id) { const guest = courseData.guestLecturers.find(item => item.id === id); if (!guest) return; showModal(`<span class="tag">Guest lecture · ${escapeHTML(guest.date)}</span><h2>${escapeHTML(guest.name)}</h2><p><strong>${escapeHTML(guest.role)}, ${escapeHTML(guest.company)}</strong></p><p>${escapeHTML(guest.bio)}</p><h3>${escapeHTML(guest.lectureTitle)}</h3><p>${escapeHTML(guest.lectureDescription)}</p><h3>Learning outcomes</h3><ul>${guest.learningOutcomes.map(outcome => `<li>${escapeHTML(outcome)}</li>`).join('')}</ul><h3>Details</h3><p>${escapeHTML(guest.date)} · ${escapeHTML(guest.time)} · ${escapeHTML(guest.room)}</p><p><a href="${escapeHTML(guest.website)}" target="_blank" rel="noreferrer">Website</a> · <a href="${escapeHTML(guest.instagram)}" target="_blank" rel="noreferrer">Instagram</a> · <a href="${escapeHTML(guest.linkedin)}" target="_blank" rel="noreferrer">LinkedIn</a></p>`); }
-function searchableItems() { return [
-  ...courseData.portfolioBriefs.map(item => ({ type: 'Portfolio brief', title: item.title, text: `${item.category} ${item.shortDescription}`, route: 'brief-library', action: `brief:${item.id}` })),
-  ...courseData.resources.map(item => ({ type: 'Resource', title: item.title, text: `${item.category} ${item.description}`, route: 'resources' })),
-  ...courseData.guestLecturers.map(item => ({ type: 'Guest lecture', title: `${item.name} — ${item.lectureTitle}`, text: `${item.role} ${item.company} ${item.bio}`, route: 'schedule', action: `guest:${item.id}` })),
-  ...courseData.schedule.flatMap(week => week.events.map(item => ({ type: `Schedule · Week ${week.week}`, title: item.title, text: `${item.description} ${item.date} ${item.room}`, route: 'schedule' }))),
-  ...courseData.announcements.map(item => ({ type: 'Announcement', title: item.title, text: item.body, route: 'dashboard' }))
-]; }
-function search(query) { const panel = $('#search-results'); const text = query.trim().toLowerCase(); if (!text) { panel.classList.remove('visible'); panel.innerHTML = ''; return; } const items = searchableItems().filter(item => `${item.title} ${item.text} ${item.type}`.toLowerCase().includes(text)).slice(0, 7); panel.innerHTML = items.length ? items.map(item => `<a class="search-item" href="#${item.route}" data-search-action="${item.action || ''}"><span>${escapeHTML(item.type)}</span><strong>${escapeHTML(item.title)}</strong></a>`).join('') : emptyState(); panel.classList.add('visible'); }
-
 document.addEventListener('click', event => {
   const route = event.target.closest('[data-route]'); if (route) { event.preventDefault(); location.hash = route.dataset.route; }
   const brief = event.target.closest('[data-brief]'); if (brief) openBrief(brief.dataset.brief);
   const scenario = event.target.closest('[data-scenario]'); if (scenario) openScenario(scenario.dataset.scenario);
   const guest = event.target.closest('[data-guest]'); if (guest) openGuest(guest.dataset.guest);
-  const result = event.target.closest('[data-search-action]'); if (result?.dataset.searchAction) { const [type, id] = result.dataset.searchAction.split(':'); setTimeout(() => type === 'brief' ? openBrief(id) : openGuest(id), 0); }
   if (event.target.matches('.modal, .modal-close')) $('.modal')?.remove();
   if (event.target.closest('.mobile-menu')) $('.sidebar').classList.toggle('open');
 });
 window.addEventListener('hashchange', () => navigate());
-document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); $('#global-search').focus(); } if (event.key === 'Escape') { $('.modal')?.remove(); $('#search-results').classList.remove('visible'); } });
-$('#global-search').addEventListener('input', event => search(event.target.value));
+document.addEventListener('keydown', event => { if (event.key === 'Escape') $('.modal')?.remove(); });
 
 loadCourseData().then(data => { courseData = data; navigate(); }).catch(error => { $('#app').innerHTML = `<div class="empty-state"><p>Course content could not load.</p><span>${escapeHTML(error.message)}</span></div>`; });

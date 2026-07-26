@@ -1,8 +1,50 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Course Hub</title><link rel="stylesheet" href="css/styles.css"></head><body>
-<header class="hero"><div class="label">CONTENT CREATION & PORTFOLIO</div><h1>Course Hub</h1><p>Build work you are proud to show future employers.</p></header>
-<nav class="nav"><a href="#objective">Objective</a><a href="#requirements">Requirements</a><a href="#projects">Portfolio Projects</a><a href="#submission">Submission</a></nav>
-<section class="section" id="objective"><div class="num">001</div><div><h2>Objective</h2><p>Build professional portfolio cases instead of traditional assignments.</p></div></section>
-<section class="section" id="requirements"><div class="num">002</div><div><h2>Requirements</h2><ul><li>Personal Brand</li><li>Motion Design</li><li>Portfolio Brief Project 1</li><li>Portfolio Brief Project 2</li><li>Final Portfolio</li></ul></div></section>
-<section class="section" id="projects"><div class="num">003</div><div><h2>Brief Library</h2><div class="card">Independent Eyewear Brand</div><div class="card">Premium Skincare Brand</div><div class="card">Boutique Hotel</div></div></section>
-<section class="section" id="submission"><div class="num">004</div><div><h2>Submission</h2><p>Submit your portfolio URL in Canvas.</p></div></section>
-</body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Content Creation & Portfolio course handbook">
+    <title>Content Creation & Portfolio — Course Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Course navigation">
+        <a class="brand" href="#dashboard" data-route="dashboard">
+          <span class="brand-mark">CC</span>
+          <span>Content Creation<br>&amp; Portfolio</span>
+        </a>
+        <button class="mobile-menu" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span>+</span></button>
+        <nav id="primary-nav" class="primary-nav">
+          <a href="#dashboard" data-route="dashboard">Dashboard</a>
+          <a href="#schedule" data-route="schedule">Course Schedule</a>
+          <a href="#group-project" data-route="group-project">Group Project</a>
+          <a href="#final-portfolio" data-route="final-portfolio">Final Portfolio</a>
+          <a href="#brief-library" data-route="brief-library">Portfolio Brief Library</a>
+          <a href="#resources" data-route="resources">Resources</a>
+          <a href="#feedback" data-route="feedback">Book Feedback</a>
+        </nav>
+        <div class="sidebar-footer"><span class="status-dot"></span> Spring term 2026</div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <button class="menu-trigger" type="button" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb">Course handbook <span>/</span> <strong id="page-label">Dashboard</strong></div>
+          <label class="search-control" for="global-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="global-search" type="search" placeholder="Search the course" autocomplete="off">
+            <kbd>⌘ K</kbd>
+          </label>
+        </header>
+        <div id="search-results" class="search-results" aria-live="polite"></div>
+        <div id="app" class="content" tabindex="-1"><div class="loading">Loading course handbook…</div></div>
+      </main>
+    </div>
+    <template id="empty-state"><div class="empty-state"><p>No matching content yet.</p><span>Try another search or check back soon.</span></div></template>
+    <script src="app.js"></script>
+  </body>
+</html>

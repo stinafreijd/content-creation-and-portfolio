@@ -1,7 +1,6 @@
 ---
 title: Content Creation & Portfolio
 term: Spring term 2026
-welcome: Make work with enough clarity, craft and character to earn a permanent place in your portfolio.
 description: A practical studio course about building considered creative work, documenting your process and presenting it with confidence.
 feedbackEmail: contentcreation@university.se
 bookingUrl: https://outlook.office.com/bookwithme/

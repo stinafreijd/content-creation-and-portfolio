@@ -1,5 +1,7 @@
 /* Content adapter: replace only loadCourseData() when moving to a CMS/API. */
 const DATA_URL = 'data.json';
+const COURSE_CONTENT_URL = 'content/course.md';
+const ANNOUNCEMENTS_CONTENT_URL = 'content/announcements.md';
 const STORAGE_KEY = 'ccp-course-hub-data';
 let courseData;
 
@@ -7,12 +9,61 @@ const $ = (selector, scope = document) => scope.querySelector(selector);
 const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 const titleize = value => value.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 
+function parseFrontmatter(markdown) {
+  const match = markdown.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  if (!match) return {};
+
+  return Object.fromEntries(match[1]
+    .split('\n')
+    .map(line => line.match(/^([A-Za-z][\w-]*):\s*(.*)$/))
+    .filter(Boolean)
+    .map(([, key, value]) => [key, value.trim().replace(/^['"]|['"]$/g, '')]));
+}
+
+function parseAnnouncements(markdown) {
+  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '').trim();
+  if (!body) return [];
+
+  return body.split(/^##\s+/m).slice(1).map((entry, index) => {
+    const [heading, ...lines] = entry.trim().split('\n');
+    const metadata = lines.shift() || '';
+    const date = metadata.match(/Date:\s*([^|]+)/i)?.[1]?.trim() || '';
+    const pinned = /Pinned:\s*yes/i.test(metadata);
+    const text = lines.join('\n').trim().replace(/\n{2,}/g, '\n');
+    return {
+      id: heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `announcement-${index + 1}`,
+      title: heading.trim(),
+      body: text,
+      date,
+      pinned
+    };
+  });
+}
+
+async function getText(url) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Could not load ${url}.`);
+  return response.text();
+}
+
 async function loadCourseData() {
   const localData = localStorage.getItem(STORAGE_KEY);
   if (localData) return JSON.parse(localData);
-  const response = await fetch(DATA_URL);
-  if (!response.ok) throw new Error('Could not load course data.');
-  return response.json();
+
+  const [dataResponse, courseMarkdown, announcementsMarkdown] = await Promise.all([
+    fetch(DATA_URL, { cache: 'no-store' }),
+    getText(COURSE_CONTENT_URL),
+    getText(ANNOUNCEMENTS_CONTENT_URL)
+  ]);
+  if (!dataResponse.ok) throw new Error('Could not load course data.');
+
+  const data = await dataResponse.json();
+  const course = parseFrontmatter(courseMarkdown);
+  return {
+    ...data,
+    course: { ...data.course, ...course },
+    announcements: parseAnnouncements(announcementsMarkdown)
+  };
 }
 
 function routeLink(route, label) { return `<a href="#${route}" data-route="${route}">${label}</a>`; }

@@ -2,7 +2,7 @@
 title: Content Creation & Portfolio
 term: Spring term 2026
 description: A practical studio course about building considered creative work, documenting your process and presenting it with confidence.
-feedbackEmail: contentcreation@university.se
+feedbackEmail: stina.freid@ju.se
 bookingUrl: https://outlook.office.com/bookwithme/
 ---
 

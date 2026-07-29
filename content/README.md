@@ -16,7 +16,7 @@ Each announcement has a heading, a date and an optional pinned state:
 
 ```md
 ## Title visible on the dashboard
-Date: 15 Jan 2026 | Pinned: yes
+Date: 31 aug 2026 | Pinned: yes
 
 Write the announcement here.
 ```

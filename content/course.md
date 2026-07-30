@@ -312,85 +312,60 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
     }
   ],
   "groupProject": {
-    "overview": "Work in a small studio team to create a complete campaign concept for a fictional client. Your outcome is a concise, well-articulated creative response rather than a large volume of assets.",
-    "timeline": [
-      "Week 2 — form teams and select a scenario",
-      "Week 4 — submit your concept deck",
-      "Week 6 — mid-project critique",
-      "Week 8 — final presentation and process archive"
-    ],
-    "deliverables": [
-      "One concept deck",
-      "A visual system and hero assets",
-      "A production or rollout plan",
-      "A five-minute group presentation"
-    ],
-    "assessment": "We assess concept clarity, relevance to the audience, craft, collaboration and your ability to explain decisions.",
-    "faq": [
-      {
-        "question": "Can we use AI-generated imagery?",
-        "answer": "Yes, when it is appropriate to your idea and clearly documented in your process. The work still needs a visible point of view and thoughtful direction."
-      },
-      {
-        "question": "How are groups formed?",
-        "answer": "You may form your own group of 3–4 people in week 2. Speak to your teacher if you need help finding a group."
-      }
-    ],
-    "scenarios": [
-      {
-        "id": "group-skincare",
-        "title": "Premium Skincare",
-        "category": "Beauty",
-        "shortDescription": "Make clinical care feel quietly luxurious and personal.",
-        "skills": [
-          "Brand strategy",
-          "Art direction",
-          "Campaign"
-        ],
-        "workload": "Shared, 3 weeks",
-        "brief": "A new skincare line wants to own the evening ritual. Create a launch campaign that makes performance feel intimate rather than technical."
-      },
-      {
-        "id": "group-hotel",
-        "title": "Boutique Hotel",
-        "category": "Hospitalality",
-        "shortDescription": "Give an under-the-radar hotel a reason to become a ritual.",
-        "skills": [
-          "Storytelling",
-          "Styling",
-          "Editorial"
-        ],
-        "workload": "Shared, 3 weeks",
-        "brief": "Build a seasonal campaign around the feeling of checking out of everyday life without leaving your curiosity behind."
-      },
-      {
-        "id": "outdoor",
-        "title": "Outdoor Lifestyle",
-        "category": "Lifestyle",
-        "shortDescription": "Reframe outdoor gear for a new, urban-minded audience.",
-        "skills": [
-          "Audience insight",
-          "Motion",
-          "Social"
-        ],
-        "workload": "Shared, 3 weeks",
-        "brief": "Create a launch for a lightweight outdoor collection that belongs as naturally in a city as it does on a trail."
-      },
-      {
-        "id": "ai-startup",
-        "title": "AI Startup",
-        "category": "Technology",
-        "shortDescription": "Make an ambitious creative tool feel understandable and useful.",
-        "skills": [
-          "Product storytelling",
-          "Copy",
-          "Brand"
-        ],
-        "workload": "Shared, 3 weeks",
-        "brief": "Position a new AI tool for independent creative teams without lapsing into the usual technology visual language."
-      }
+  "overview": "Work in teams of 1–3 students to develop a complete visual concept for a fictional client. The project simulates a real creative commission, where you are expected to define a clear concept, develop a cohesive visual identity and communicate your ideas through a professional presentation.",
+  "teamSize": "1–3 students",
+  "timeline": [
+    "Week 2 — Choose a project brief and begin concept development",
+    "Week 4 — Submit Concept Pitch (5 slides)",
+    "Week 7 — Final Presentation"
+  ],
+  "deliverables": [
+    {
+      "title": "Concept Pitch",
+      "description": "Submit a 5-slide presentation introducing your concept, creative direction and initial visual approach. The pitch is submitted in Canvas and approved before production begins."
+    },
+    {
+      "title": "Final Presentation",
+      "description": "Present your completed project in a professional client presentation demonstrating your concept, visual identity and final applications."
+    }
+  ],
+  "submission": "Submit your Concept Pitch in Canvas. Present your final project during the final presentation sessions.",
+  "assessment": {
+    "criteria": [
+      "Concept",
+      "Design Quality",
+      "Applications",
+      "Presentation",
+      "Craftsmanship"
     ]
   },
+  "briefs": [
+    {
+      "id": "hotel",
+      "title": "Boutique Hotel",
+      "businessType": "Hospitality",
+      "meetYourClient": "A boutique hotel is preparing for its grand opening and wants to create a memorable brand experience that attracts modern travellers. Your task is to develop a visual concept that captures the atmosphere, personality and unique character of the destination."
+    },
+    {
+      "id": "outdoor",
+      "title": "Outdoor Lifestyle Brand",
+      "businessType": "Lifestyle",
+      "meetYourClient": "A new outdoor brand is launching a collection designed for everyday adventures. The company wants to inspire a younger audience by combining functionality, sustainability and contemporary design."
+    },
+    {
+      "id": "skincare",
+      "title": "Premium Skincare",
+      "businessType": "Beauty",
+      "meetYourClient": "A skincare company is preparing to launch a new product line. The founders want a premium visual identity that communicates trust, quality and simplicity while standing out in a competitive market."
+    },
+    {
+      "id": "ai",
+      "title": "AI Startup",
+      "businessType": "Technology",
+      "meetYourClient": "An AI startup has developed a new creative tool and needs a brand identity that makes advanced technology feel approachable, inspiring and easy to understand."
+    }
+  ]
+}
   "finalPortfolio": {
     "overview": "Your final portfolio is an edited record of what you made, how you think and what kind of creative work you want to do more of.",
     "structure": [

@@ -384,14 +384,14 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
   },
 
   "assessmentFocus": [
-    "Strategic thinking",
+ "Strategic thinking",
     "Creativity",
     "Visual communication",
     "Design quality",
     "Cohesion",
     "Professional presentation"
   ]
-}
+},
 "groupProjectBriefs": [
   {
     "id": "hotel",

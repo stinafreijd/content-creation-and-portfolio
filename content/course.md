@@ -311,61 +311,119 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
       "image": "assets/images/brief-coffee.svg"
     }
   ],
-  "groupProject": {
-  "overview": "Work in teams of 1–3 students to develop a complete visual concept for a fictional client. The project simulates a real creative commission, where you are expected to define a clear concept, develop a cohesive visual identity and communicate your ideas through a professional presentation.",
-  "teamSize": "1–3 students",
-  "timeline": [
-    "Week 2 — Choose a project brief and begin concept development",
-    "Week 4 — Submit Concept Pitch (5 slides)",
-    "Week 7 — Final Presentation"
+"groupProject": {
+  "title": "Launching a Digital-First Brand",
+
+  "overview": "In this project, you may choose to work individually or in teams of up to three students. Your task is to develop and launch a complete digital-first brand based on one of the fictional scenarios provided. You will develop a complete brand experience by combining branding, storytelling, content creation, motion design and digital communication into one cohesive concept. The project simulates a real client where your team is responsible for taking a brand from concept to launch. Your final presentation should demonstrate strategic thinking, creative execution and professional presentation skills suitable for a design portfolio.",
+
+  "teamwork": "You may complete this project individually or in teams of up to three students. If working in a team, all members are expected to contribute actively throughout the project. Tasks may be divided based on individual strengths, but the final outcome should reflect a shared creative vision, a shared effort and a consistent level of quality.",
+
+  "learningObjectives": [
+    "Develop a strong brand concept.",
+    "Create a cohesive visual identity for digital media.",
+    "Apply storytelling throughout a complete brand experience.",
+    "Produce engaging content for digital platforms.",
+    "Use motion and sound to strengthen communication.",
+    "Design for multiple digital touchpoints.",
+    "Present and justify design decisions professionally.",
+    "Collaborate effectively within a creative team."
   ],
+
   "deliverables": [
     {
       "title": "Concept Pitch",
-      "description": "Submit a 5-slide presentation introducing your concept, creative direction and initial visual approach. The pitch is submitted in Canvas and approved before production begins."
+      "deadline": "Week 37",
+      "submission": "Canvas",
+      "description": "Submit a maximum five-slide Concept Pitch introducing your initial idea. This is a hand-in, not a presentation.",
+      "suggestedContent": [
+        "Brand name",
+        "Problem or opportunity",
+        "Target audience",
+        "Brand positioning",
+        "Moodboard",
+        "Creative direction",
+        "Visual references",
+        "Initial content ideas"
+      ]
     },
     {
       "title": "Final Presentation",
-      "description": "Present your completed project in a professional client presentation demonstrating your concept, visual identity and final applications."
+      "submission": "Public Figma Slides link",
+      "description": "Present your finished digital-first brand through a professional presentation. Focus on the final brand experience rather than documenting your design process."
     }
   ],
-  "submission": "Submit your Concept Pitch in Canvas. Present your final project during the final presentation sessions.",
-  "assessment": {
-    "criteria": [
-      "Concept",
-      "Design Quality",
-      "Applications",
-      "Presentation",
-      "Craftsmanship"
-    ]
+
+  "projectGuidelines": [
+    "Brand strategy and positioning",
+    "Logo and visual identity",
+    "Colour palette and typography",
+    "Brand guidelines",
+    "Marketing strategy",
+    "Social media content",
+    "Motion design",
+    "Website or app concepts",
+    "Packaging design",
+    "Product photography",
+    "Campaign concepts",
+    "Advertising",
+    "Printed materials",
+    "Environmental graphics",
+    "Merchandise",
+    "Digital and physical brand applications",
+    "High-quality mockups"
+  ],
+
+  "presentationQuality": "Your presentation should be visually engaging, well structured and easy to follow. Every slide should contribute to telling the story of the brand and provide a complete understanding of the final outcome.",
+
+  "submission": {
+    "platform": "Canvas",
+    "files": [
+      "Public Figma Slides link"
+    ],
+    "groupSubmission": "Only one submission per team is required."
   },
-  "briefs": [
-    {
-      "id": "hotel",
-      "title": "Boutique Hotel",
-      "businessType": "Hospitality",
-      "meetYourClient": "A boutique hotel is preparing for its grand opening and wants to create a memorable brand experience that attracts modern travellers. Your task is to develop a visual concept that captures the atmosphere, personality and unique character of the destination."
-    },
-    {
-      "id": "outdoor",
-      "title": "Outdoor Lifestyle Brand",
-      "businessType": "Lifestyle",
-      "meetYourClient": "A new outdoor brand is launching a collection designed for everyday adventures. The company wants to inspire a younger audience by combining functionality, sustainability and contemporary design."
-    },
-    {
-      "id": "skincare",
-      "title": "Premium Skincare",
-      "businessType": "Beauty",
-      "meetYourClient": "A skincare company is preparing to launch a new product line. The founders want a premium visual identity that communicates trust, quality and simplicity while standing out in a competitive market."
-    },
-    {
-      "id": "ai",
-      "title": "AI Startup",
-      "businessType": "Technology",
-      "meetYourClient": "An AI startup has developed a new creative tool and needs a brand identity that makes advanced technology feel approachable, inspiring and easy to understand."
-    }
+
+  "assessmentFocus": [
+    "Strategic thinking",
+    "Creativity",
+    "Visual communication",
+    "Design quality",
+    "Cohesion",
+    "Professional presentation"
   ]
 }
+"groupProjectBriefs": [
+  {
+    "id": "hotel",
+    "title": "Boutique Hotel or Hospitality Brand",
+    "description": "Develop a complete digital-first brand that communicates the company's vision and creates a memorable guest experience before, during and after every visit."
+  },
+  {
+    "id": "sustainable",
+    "title": "Sustainable Consumer Brand",
+    "description": "Create a distinctive brand that builds trust, communicates a clear purpose and stands out in a competitive market."
+  },
+  {
+    "id": "everyday",
+    "title": "Everyday Product",
+    "description": "Transform something familiar into a desirable and memorable brand experience through creative positioning and communication."
+  },
+  {
+    "id": "outdoor",
+    "title": "Outdoor Lifestyle Brand",
+    "description": "Develop a brand experience that inspires adventure, community and a modern outdoor lifestyle across relevant customer touchpoints."
+  },
+  {
+    "id": "startup",
+    "title": "Digital Product or Startup",
+    "description": "Create a digital-first brand that communicates trust, innovation and usability while creating a seamless customer experience."
+  },
+  {
+    "id": "skincare",
+    "title": "Premium Skincare Brand",
+    "description": "Develop a complete brand experience that differentiates the company through branding, storytelling and customer experience across digital and physical touchpoints."
+  }
+]
   "finalPortfolio": {
     "overview": "Your final portfolio is an edited record of what you made, how you think and what kind of creative work you want to do more of.",
     "structure": [

@@ -12,196 +12,199 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
     "welcome": "Make work with enough clarity, craft and character to earn a permanent place in your portfolio.",
     "description": "A practical studio course about building considered creative work, documenting your process and presenting it with confidence.",
     "feedbackEmail": "stina.freid@ju.se",
-    "bookingUrl": "https://outlook.office.com/bookwithme/"
+    "bookingUrl": "https://outlook.office.com/bookwithme/",
+    "calendarYear": 2026
   },
   "schedule": [
     {
-      "week": 1,
-      "title": "Orientation & visual direction",
-      "dateRange": "19–23 Jan",
+      "week": 36,
+      "title": "Introduction & branding",
+      "dateRange": "31 Aug–4 Sep",
       "events": [
         {
           "type": "lecture",
-          "title": "Course introduction: make work that travels",
-          "description": "How the course is structured, what makes a strong portfolio case and how we will work together.",
-          "date": "19 Jan",
-          "time": "09:00–11:00",
-          "room": "Studio A"
+          "title": "Introduction",
+          "description": "Lecture",
+          "date": "31 Aug",
+          "time": "15:15–17:00",
+          "room": "E1029 (Stora Enso)"
         },
         {
-          "type": "workshop",
-          "title": "Creative inventory",
-          "description": "Map your interests, references and existing skills into a personal direction.",
-          "date": "21 Jan",
-          "time": "13:00–16:00",
-          "room": "Lab 02"
-        }
-      ]
-    },
-    {
-      "week": 2,
-      "title": "Concepts & systems",
-      "dateRange": "26–30 Jan",
-      "events": [
-        {
           "type": "lecture",
-          "title": "Concept before content",
-          "description": "Building an idea with enough depth to direct every creative decision.",
-          "date": "26 Jan",
-          "time": "09:00–11:00",
-          "room": "Studio A"
+          "title": "Branding & identity",
+          "description": "Lecture",
+          "date": "1 Sep",
+          "time": "15:15–17:00",
+          "room": "E1423 (Fagerhultsaulan)"
         },
         {
           "type": "lab",
-          "title": "Portfolio brief sprint",
-          "description": "Select a brief and start shaping a concept, visual world and production plan.",
-          "date": "28 Jan",
-          "time": "13:00–16:00",
-          "room": "Lab 02"
-        }
-      ]
-    },
-    {
-      "week": 3,
-      "title": "Image making",
-      "dateRange": "2–6 Feb",
-      "events": [
-        {
-          "type": "guest-lecture",
-          "title": "From moodboard to campaign",
-          "description": "Guest lecture with Lina Åberg, Creative Director at Studio North.",
-          "date": "3 Feb",
-          "time": "10:00–11:30",
-          "room": "Auditorium 1",
-          "guestId": "lina-aberg"
-        },
-        {
-          "type": "workshop",
-          "title": "Art direction clinic",
-          "description": "Bring your concept for a fast-paced group critique and direction session.",
-          "date": "5 Feb",
-          "time": "13:00–16:00",
-          "room": "Lab 02"
-        }
-      ]
-    },
-    {
-      "week": 4,
-      "title": "Production & collaboration",
-      "dateRange": "9–13 Feb",
-      "events": [
-        {
-          "type": "lecture",
-          "title": "Producing with care",
-          "description": "Lightweight production planning, permissions and working well in teams.",
-          "date": "9 Feb",
-          "time": "09:00–11:00",
-          "room": "Studio A"
-        },
-        {
-          "type": "deadline",
-          "title": "Group project: concept deck",
-          "description": "Submit your team’s concept deck in Canvas before 17:00.",
-          "date": "13 Feb",
-          "time": "17:00",
-          "room": "Canvas"
-        }
-      ]
-    },
-    {
-      "week": 5,
-      "title": "Storytelling & sequencing",
-      "dateRange": "16–20 Feb",
-      "events": [
-        {
-          "type": "guest-lecture",
-          "title": "The editorial eye",
-          "description": "Guest lecture with Omar Said, photographer and visual storyteller.",
-          "date": "17 Feb",
-          "time": "10:00–11:30",
-          "room": "Auditorium 1",
-          "guestId": "omar-said"
+          "title": "Figma lab",
+          "description": "Lab · Group 1, Group 3",
+          "date": "4 Sep",
+          "time": "08:15–12:00",
+          "room": "E2404 (datorsal, Mac)"
         },
         {
           "type": "lab",
-          "title": "Edit room",
-          "description": "Bring your raw material and build a first sequence for your case study.",
-          "date": "19 Feb",
-          "time": "13:00–16:00",
-          "room": "Lab 02"
+          "title": "Figma lab",
+          "description": "Lab · Group 2, Group 4",
+          "date": "4 Sep",
+          "time": "13:15–17:00",
+          "room": "E2404 (datorsal, Mac)"
         }
       ]
     },
     {
-      "week": 6,
-      "title": "Critique & refinement",
-      "dateRange": "23–27 Feb",
+      "week": 37,
+      "title": "Guest lectures & motion",
+      "dateRange": "7 Sep–11 Sep",
       "events": [
         {
-          "type": "workshop",
-          "title": "Mid-project critique",
-          "description": "Small-group critique focused on clarity, craft and the next best decision.",
-          "date": "24 Feb",
-          "time": "09:00–12:00",
-          "room": "Studio A"
+          "type": "guest-lecture",
+          "title": "Johanna Burai - Guest lecture",
+          "description": "Lecture",
+          "date": "7 Sep",
+          "time": "13:15–15:00",
+          "room": "Undervisning online (Teaching online)"
         },
         {
-          "type": "deadline",
-          "title": "Portfolio brief project 01",
-          "description": "Submit the finished project and a short process reflection.",
-          "date": "27 Feb",
-          "time": "17:00",
-          "room": "Canvas"
+          "type": "lecture",
+          "title": "Josefine Bäckström",
+          "description": "Lecture",
+          "date": "8 Sep",
+          "time": "13:15–15:00",
+          "room": "E1405 (Gjuterisalen)"
+        },
+        {
+          "type": "guest-lecture",
+          "title": "Guest lecture",
+          "description": "",
+          "date": "10 Sep",
+          "time": "13:15–15:00",
+          "room": "E1405 (Gjuterisalen)"
+        },
+        {
+          "type": "lab",
+          "title": "Motion lab",
+          "description": "Lab · Group 1, Group 3",
+          "date": "11 Sep",
+          "time": "08:15–12:00",
+          "room": "E2404 (datorsal, Mac)"
+        },
+        {
+          "type": "lab",
+          "title": "Motion lab",
+          "description": "Lab · Group 2, Group 4",
+          "date": "11 Sep",
+          "time": "13:15–17:00",
+          "room": "E2404 (datorsal, Mac)"
+        }
+      ]
+    },
+    {
+      "week": 38,
+      "title": "Guest lectures & motion",
+      "dateRange": "16 Sep–18 Sep",
+      "events": [
+        {
+          "type": "guest-lecture",
+          "title": "Ingmar sthlm - Guest lecture",
+          "description": "Lecture",
+          "date": "16 Sep",
+          "time": "13:15–15:00",
+          "room": "E1405 (Gjuterisalen)"
+        },
+        {
+          "type": "guest-lecture",
+          "title": "Auste guest lecture",
+          "description": "Lecture",
+          "date": "17 Sep",
+          "time": "13:15–15:00",
+          "room": "E1405 (Gjuterisalen)"
+        },
+        {
+          "type": "lab",
+          "title": "Motion lab",
+          "description": "Lab · Group 1, Group 3",
+          "date": "18 Sep",
+          "time": "08:15–12:00",
+          "room": "E2404 (datorsal, Mac)"
+        },
+        {
+          "type": "lab",
+          "title": "Motion lab",
+          "description": "Lab · Group 2, Group 4",
+          "date": "18 Sep",
+          "time": "13:15–17:00",
+          "room": "E2404 (datorsal, Mac)"
+        }
+      ]
+    },
+    {
+      "week": 39,
+      "title": "Guest lectures & content production",
+      "dateRange": "21 Sep–25 Sep",
+      "events": [
+        {
+          "type": "guest-lecture",
+          "title": "Guest lecture",
+          "description": "Lecture",
+          "date": "21 Sep",
+          "time": "15:15–17:00",
+          "room": "E1029 (Stora Enso)"
+        },
+        {
+          "type": "lecture",
+          "title": "Content",
+          "description": "Lecture",
+          "date": "22 Sep",
+          "time": "15:15–17:00",
+          "room": "E1423 (Fagerhultsaulan)"
+        },
+        {
+          "type": "lab",
+          "title": "Content production",
+          "description": "Lab · Group 1, Group 3",
+          "date": "25 Sep",
+          "time": "08:15–12:00",
+          "room": "E2404 (datorsal, Mac)"
+        },
+        {
+          "type": "lab",
+          "title": "Content production",
+          "description": "Lab · Group 2, Group 4",
+          "date": "25 Sep",
+          "time": "13:15–17:00",
+          "room": "E2404 (datorsal, Mac)"
+        }
+      ]
+    },
+    {
+      "week": 42,
+      "title": "Presentations",
+      "dateRange": "12 Oct–13 Oct",
+      "events": [
+        {
+          "type": "lecture",
+          "title": "Presentations",
+          "description": "Lecture",
+          "date": "12 Oct",
+          "time": "15:15–17:00",
+          "room": "E1029 (Stora Enso)"
+        },
+        {
+          "type": "lecture",
+          "title": "Presentations",
+          "description": "Lecture",
+          "date": "13 Oct",
+          "time": "15:15–17:00",
+          "room": "E1423 (Fagerhultsaulan)"
         }
       ]
     }
   ],
-  "guestLecturers": [
-    {
-      "id": "lina-aberg",
-      "name": "Lina Åberg",
-      "role": "Creative Director",
-      "company": "Studio North",
-      "portrait": "assets/images/lina-aberg.svg",
-      "bio": "Lina directs brand worlds and image systems for fashion, culture and hospitality clients. Her practice sits between strategy, styling and the small details that make a campaign feel intentional.",
-      "lectureTitle": "From moodboard to campaign",
-      "lectureDescription": "A candid walkthrough of how a loose visual instinct becomes a coherent creative campaign.",
-      "learningOutcomes": [
-        "Translate references into a visual direction",
-        "Create a useful art-direction deck",
-        "Make production choices that protect the core idea"
-      ],
-      "website": "https://example.com",
-      "instagram": "https://instagram.com",
-      "linkedin": "https://linkedin.com",
-      "date": "3 February 2026",
-      "time": "10:00–11:30",
-      "room": "Auditorium 1",
-      "featured": true
-    },
-    {
-      "id": "omar-said",
-      "name": "Omar Said",
-      "role": "Photographer & Visual Storyteller",
-      "company": "Independent",
-      "portrait": "assets/images/omar-said.svg",
-      "bio": "Omar works across portraiture, editorial and brand storytelling. He is especially interested in the edit: the moment separate images become a point of view.",
-      "lectureTitle": "The editorial eye",
-      "lectureDescription": "How to choose, sequence and present images so an audience understands both your work and your perspective.",
-      "learningOutcomes": [
-        "Edit with a clear point of view",
-        "Build rhythm through sequencing",
-        "Write concise project captions"
-      ],
-      "website": "https://example.com",
-      "instagram": "https://instagram.com",
-      "linkedin": "https://linkedin.com",
-      "date": "17 February 2026",
-      "time": "10:00–11:30",
-      "room": "Auditorium 1",
-      "featured": false
-    }
-  ],
+  "guestLecturers": [],
   "portfolioBriefs": [
     {
       "id": "eyewear",
@@ -577,7 +580,17 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
     "calendar": {
       "months": [
         "January",
-        "February"
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
       ],
       "weekdays": [
         "Mon",

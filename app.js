@@ -73,10 +73,12 @@ function calendarMonth(year, month) {
   return `<section class="calendar-month"><header class="calendar-month-title"><h2>${text(`calendar.months.${month}`)}</h2><span>${year}</span></header><div class="calendar-grid">${courseData.ui.calendar.weekdays.map(day => `<div class="calendar-day-name">${escapeHTML(day)}</div>`).join('')}${cells.join('')}</div></section>`;
 }
 function renderSchedule() {
+  const months = [...new Set(courseData.schedule.flatMap(week => week.events.map(event => parseCourseDate(event.date)?.month)).filter(Number.isInteger))].sort((a, b) => a - b);
+  const guestSection = courseData.guestLecturers.length ? `<section style="margin-top:54px"><div class="section-heading"><h2>${text('labels.guestLecturers')}</h2></div><div class="guest-grid">${courseData.guestLecturers.map(guestCard).join('')}</div></section>` : '';
   return `${pageHeader('schedule')}
-  <div class="calendar-legend"><span class="calendar-event lecture">${eventTypeLabel('lecture')}</span><span class="calendar-event workshop">${text('eventTypes.workshopLab')}</span><span class="calendar-event guest-lecture">${eventTypeLabel('guest-lecture')}</span><span class="calendar-event deadline">${eventTypeLabel('deadline')}</span></div><section class="calendar-wrap">${[0, 1].map(month => calendarMonth(2026, month)).join('')}</section>
+  <div class="calendar-legend"><span class="calendar-event lecture">${eventTypeLabel('lecture')}</span><span class="calendar-event workshop">${text('eventTypes.workshopLab')}</span><span class="calendar-event guest-lecture">${eventTypeLabel('guest-lecture')}</span><span class="calendar-event deadline">${eventTypeLabel('deadline')}</span></div><section class="calendar-wrap">${months.map(month => calendarMonth(courseData.course.calendarYear, month)).join('')}</section>
   <section class="timeline">${courseData.schedule.map((week, index) => `<details class="week" ${index === 0 ? 'open' : ''}><summary><span class="week-number">${text('labels.week')} ${String(week.week).padStart(2, '0')}</span><h2>${escapeHTML(week.title)}</h2><span class="week-date">${escapeHTML(week.dateRange)}</span></summary><div class="week-body">${week.events.map(eventCard).join('')}</div></details>`).join('')}</section>
-  <section style="margin-top:54px"><div class="section-heading"><h2>${text('labels.guestLecturers')}</h2></div><div class="guest-grid">${courseData.guestLecturers.map(guestCard).join('')}</div></section>`;
+  ${guestSection}`;
 }
 function renderGroupProject() {
   const project = courseData.groupProject;

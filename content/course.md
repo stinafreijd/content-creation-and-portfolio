@@ -392,6 +392,7 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
     "Professional presentation"
   ]
 },
+
 "groupProjectBriefs": [
   {
     "id": "hotel",
@@ -423,7 +424,7 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
     "title": "Premium Skincare Brand",
     "description": "Develop a complete brand experience that differentiates the company through branding, storytelling and customer experience across digital and physical touchpoints."
   }
-]
+],
   "finalPortfolio": {
     "overview": "Your final portfolio is an edited record of what you made, how you think and what kind of creative work you want to do more of.",
     "structure": [

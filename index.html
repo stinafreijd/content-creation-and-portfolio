@@ -3,39 +3,39 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Content Creation & Portfolio course handbook">
+    <meta name="description" content="Content Creation & Portfolio course handbook" data-ui-attribute="content:chrome.metaDescription">
     <title>Content Creation & Portfolio — Course Hub</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar" aria-label="Course navigation">
+      <aside class="sidebar" aria-label="Course navigation" data-ui-attribute="aria-label:chrome.navigationLabel">
         <a class="brand" href="#dashboard" data-route="dashboard">
           <span class="brand-mark">CC</span>
-          <span>Content Creation<br>&amp; Portfolio</span>
+          <span data-ui="chrome.brand">Content Creation &amp; Portfolio</span>
         </a>
-        <button class="mobile-menu" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span>+</span></button>
+        <button class="mobile-menu" type="button" aria-expanded="false" aria-controls="primary-nav"><span data-ui="chrome.menu">Menu</span> <span>+</span></button>
         <nav id="primary-nav" class="primary-nav">
-          <a href="#dashboard" data-route="dashboard">Dashboard</a>
-          <a href="#schedule" data-route="schedule">Course Schedule</a>
-          <a href="#group-project" data-route="group-project">Group Project</a>
-          <a href="#final-portfolio" data-route="final-portfolio">Final Portfolio</a>
-          <a href="#brief-library" data-route="brief-library">Portfolio Brief Library</a>
-          <a href="#resources" data-route="resources">Resources</a>
-          <a href="#feedback" data-route="feedback">Book Feedback</a>
+          <a href="#dashboard" data-route="dashboard" data-ui="nav.dashboard">Dashboard</a>
+          <a href="#schedule" data-route="schedule" data-ui="nav.schedule">Course Schedule</a>
+          <a href="#group-project" data-route="group-project" data-ui="nav.groupProject">Group Project</a>
+          <a href="#final-portfolio" data-route="final-portfolio" data-ui="nav.finalPortfolio">Final Portfolio</a>
+          <a href="#brief-library" data-route="brief-library" data-ui="nav.briefLibrary">Portfolio Brief Library</a>
+          <a href="#resources" data-route="resources" data-ui="nav.resources">Resources</a>
+          <a href="#feedback" data-route="feedback" data-ui="nav.bookFeedback">Book Feedback</a>
         </nav>
-        <div class="sidebar-footer"><span class="status-dot"></span> Spring term 2026</div>
+        <div class="sidebar-footer"><span class="status-dot"></span> <span data-ui="course.term">Spring term 2026</span></div>
       </aside>
 
       <main class="main-panel">
         <header class="topbar">
-          <button class="menu-trigger" type="button" aria-label="Open navigation">☰</button>
-          <div class="breadcrumb">Course handbook <span>/</span> <strong id="page-label">Dashboard</strong></div>
+          <button class="menu-trigger" type="button" aria-label="Open navigation" data-ui-attribute="aria-label:chrome.openNavigation">☰</button>
+          <div class="breadcrumb"><span data-ui="labels.courseHandbook">Course handbook</span> <span>/</span> <strong id="page-label">Dashboard</strong></div>
         </header>
-        <div id="app" class="content" tabindex="-1"><div class="loading">Loading course handbook…</div></div>
+        <div id="app" class="content" tabindex="-1"><div class="loading" data-ui="chrome.loading">Loading course handbook…</div></div>
       </main>
     </div>
-    <template id="empty-state"><div class="empty-state"><p>No matching content yet.</p><span>Try another search or check back soon.</span></div></template>
+    <template id="empty-state"><div class="empty-state"><p data-ui="empty.title">No matching content yet.</p><span data-ui="empty.intro">Try another search or check back soon.</span></div></template>
     <script src="app.js"></script>
   </body>
 </html>

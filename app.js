@@ -1,43 +1,15 @@
-/* Content adapter: replace only loadCourseData() when moving to a CMS/API. */
-const DATA_URL = 'data.json';
+/* The complete editable source is content/site-content.md. */
 const COURSE_CONTENT_URL = 'content/course.md';
-const ANNOUNCEMENTS_CONTENT_URL = 'content/announcements.md';
-const STORAGE_KEY = 'ccp-course-hub-data';
 let courseData;
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 const titleize = value => value.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 
-function parseFrontmatter(markdown) {
-  const match = markdown.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
-  if (!match) return {};
-
-  return Object.fromEntries(match[1]
-    .split('\n')
-    .map(line => line.match(/^([A-Za-z][\w-]*):\s*(.*)$/))
-    .filter(Boolean)
-    .map(([, key, value]) => [key, value.trim().replace(/^['"]|['"]$/g, '')]));
-}
-
-function parseAnnouncements(markdown) {
-  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '').trim();
-  if (!body) return [];
-
-  return body.split(/^##\s+/m).slice(1).map((entry, index) => {
-    const [heading, ...lines] = entry.trim().split('\n');
-    const metadata = lines.shift() || '';
-    const date = metadata.match(/Date:\s*([^|]+)/i)?.[1]?.trim() || '';
-    const pinned = /Pinned:\s*yes/i.test(metadata);
-    const text = lines.join('\n').trim().replace(/\n{2,}/g, '\n');
-    return {
-      id: heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `announcement-${index + 1}`,
-      title: heading.trim(),
-      body: text,
-      date,
-      pinned
-    };
-  });
+function parseCourseMarkdown(markdown) {
+  const match = markdown.match(/```json\s*\n([\s\S]*?)\n```/i);
+  if (!match) throw new Error('The editable JSON block is missing from content/course.md.');
+  return JSON.parse(match[1]);
 }
 
 async function getText(url) {
@@ -47,53 +19,40 @@ async function getText(url) {
 }
 
 async function loadCourseData() {
-  const localData = localStorage.getItem(STORAGE_KEY);
-  if (localData) return JSON.parse(localData);
-
-  const [dataResponse, courseMarkdown, announcementsMarkdown] = await Promise.all([
-    fetch(DATA_URL, { cache: 'no-store' }),
-    getText(COURSE_CONTENT_URL),
-    getText(ANNOUNCEMENTS_CONTENT_URL)
-  ]);
-  if (!dataResponse.ok) throw new Error('Could not load course data.');
-
-  const data = await dataResponse.json();
-  const course = parseFrontmatter(courseMarkdown);
-  return {
-    ...data,
-    course: { ...data.course, ...course },
-    announcements: parseAnnouncements(announcementsMarkdown)
-  };
+  return parseCourseMarkdown(await getText(COURSE_CONTENT_URL));
 }
 
-function routeLink(route, label) { return `<a href="#${route}" data-route="${route}">${label}</a>`; }
-function pageHeader(eyebrow, title, intro) { return `<header class="page-header"><p class="eyebrow">${eyebrow}</p><h1 class="page-title">${title}</h1><p class="page-intro">${intro}</p></header>`; }
-function emptyState() { return $('#empty-state').content.firstElementChild.outerHTML; }
+function uiValue(key, fallback = '') { return key.split('.').reduce((value, part) => value?.[part], courseData?.ui) ?? fallback; }
+function text(key, fallback = '') { return escapeHTML(uiValue(key, fallback)); }
+function eventTypeLabel(type) { return text(`eventTypes.${type}`, titleize(type)); }
+function routeLink(route, labelKey, fallback) { return `<a href="#${route}" data-route="${route}">${text(labelKey, fallback)}</a>`; }
+function pageHeader(page) { return `<header class="page-header"><p class="eyebrow">${text(`pages.${page}.eyebrow`)}</p><h1 class="page-title">${text(`pages.${page}.title`)}</h1><p class="page-intro">${text(`pages.${page}.intro`)}</p></header>`; }
+function emptyState() { return `<div class="empty-state"><p>${text('empty.title')}</p><span>${text('empty.intro')}</span></div>`; }
 function eventCard(event) {
-  return `<article class="event-card ${escapeHTML(event.type)}"><div class="event-kind">${titleize(event.type)}</div><div><h3>${escapeHTML(event.title)}</h3><p>${escapeHTML(event.description)}</p><div class="event-meta">${escapeHTML(event.date)} · ${escapeHTML(event.time)} · ${escapeHTML(event.room)}</div></div></article>`;
+  return `<article class="event-card ${escapeHTML(event.type)}"><div class="event-kind">${eventTypeLabel(event.type)}</div><div><h3>${escapeHTML(event.title)}</h3><p>${escapeHTML(event.description)}</p><div class="event-meta">${escapeHTML(event.date)} · ${escapeHTML(event.time)} · ${escapeHTML(event.room)}</div></div></article>`;
 }
 function deadlineCard(event) {
   const bits = event.date.split(' ');
   return `<article class="deadline"><div class="date"><strong>${escapeHTML(bits[0])}</strong>${escapeHTML(bits.slice(1).join(' '))}</div><div><h3>${escapeHTML(event.title)}</h3><p>${escapeHTML(event.description)}</p></div><span class="pill">${escapeHTML(event.time)}</span></article>`;
 }
-function announcementCard(item) { return `<article class="notice-card ${item.pinned ? 'pinned' : ''}"><div class="notice-meta">${item.pinned ? 'Pinned · ' : ''}${escapeHTML(item.date)}</div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.body)}</p></article>`; }
+function announcementCard(item) { return `<article class="notice-card ${item.pinned ? 'pinned' : ''}"><div class="notice-meta">${item.pinned ? `${text('labels.pinned')} · ` : ''}${escapeHTML(item.date)}</div><h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.body)}</p></article>`; }
 function guestCard(guest) {
-  return `<article class="guest-card"><img class="guest-portrait" src="${escapeHTML(guest.portrait)}" alt="Portrait of ${escapeHTML(guest.name)}"><div class="guest-card-body"><p class="guest-role">${escapeHTML(guest.role)} · ${escapeHTML(guest.company)}</p><h3>${escapeHTML(guest.name)}</h3><p>${escapeHTML(guest.lectureTitle)}</p><div class="guest-links"><button class="card-expand" data-guest="${escapeHTML(guest.id)}">Full profile</button></div></div></article>`;
+  return `<article class="guest-card"><img class="guest-portrait" src="${escapeHTML(guest.portrait)}" alt="${text('labels.portraitOf')} ${escapeHTML(guest.name)}"><div class="guest-card-body"><p class="guest-role">${escapeHTML(guest.role)} · ${escapeHTML(guest.company)}</p><h3>${escapeHTML(guest.name)}</h3><p>${escapeHTML(guest.lectureTitle)}</p><div class="guest-links"><button class="card-expand" data-guest="${escapeHTML(guest.id)}">${text('buttons.fullProfile')}</button></div></div></article>`;
 }
 function briefCard(brief) {
-  return `<article class="brief-card" data-brief="${escapeHTML(brief.id)}"><div class="card-topline"><span class="tag">${escapeHTML(brief.category)}</span><span class="tag">${escapeHTML(brief.workload)}</span></div><h3>${escapeHTML(brief.title)}</h3><p>${escapeHTML(brief.shortDescription)}</p><button class="card-expand" data-brief="${escapeHTML(brief.id)}">Read full brief ↗</button></article>`;
+  return `<article class="brief-card" data-brief="${escapeHTML(brief.id)}"><div class="card-topline"><span class="tag">${escapeHTML(brief.category)}</span><span class="tag">${escapeHTML(brief.workload)}</span></div><h3>${escapeHTML(brief.title)}</h3><p>${escapeHTML(brief.shortDescription)}</p><button class="card-expand" data-brief="${escapeHTML(brief.id)}">${text('buttons.readFullBrief')}</button></article>`;
 }
 function scenarioCard(scenario) {
-  return `<article class="scenario-card" data-scenario="${escapeHTML(scenario.id)}"><div class="card-topline"><span class="tag">${escapeHTML(scenario.category)}</span><span class="tag">${escapeHTML(scenario.workload)}</span></div><h3>${escapeHTML(scenario.title)}</h3><p>${escapeHTML(scenario.shortDescription)}</p><button class="card-expand" data-scenario="${escapeHTML(scenario.id)}">Open scenario ↗</button></article>`;
+  return `<article class="scenario-card" data-scenario="${escapeHTML(scenario.id)}"><div class="card-topline"><span class="tag">${escapeHTML(scenario.category)}</span><span class="tag">${escapeHTML(scenario.workload)}</span></div><h3>${escapeHTML(scenario.title)}</h3><p>${escapeHTML(scenario.shortDescription)}</p><button class="card-expand" data-scenario="${escapeHTML(scenario.id)}">${text('buttons.openScenario')}</button></article>`;
 }
-function faq(items = []) { return `<section class="faq"><div class="section-heading"><h2>Frequently asked questions</h2></div>${items.map(item => `<details><summary>${escapeHTML(item.question)}</summary><p>${escapeHTML(item.answer)}</p></details>`).join('')}</section>`; }
+function faq(items = []) { return `<section class="faq"><div class="section-heading"><h2>${text('labels.faq')}</h2></div>${items.map(item => `<details><summary>${escapeHTML(item.question)}</summary><p>${escapeHTML(item.answer)}</p></details>`).join('')}</section>`; }
 
 function renderDashboard() {
   const deadlines = courseData.schedule.flatMap(week => week.events).filter(event => event.type === 'deadline').slice(0, 3);
   const focus = courseData.schedule[0]?.events[0];
-  return `<section class="dashboard-masthead"><div class="dashboard-masthead-copy"><div><p class="dashboard-masthead-meta">${escapeHTML(courseData.course.term)} · Course handbook</p><h1>${escapeHTML(courseData.course.title)}</h1><p>${escapeHTML(courseData.course.description)}</p></div><div>${routeLink('brief-library', 'Enter the brief library →')}</div></div><div class="dashboard-image-grid"><figure><img src="assets/images/brief-hotel.svg" alt="A coastal hotel portfolio brief"></figure><figure><img src="assets/images/brief-eyewear.svg" alt="An independent eyewear portfolio brief"></figure><figure><img src="assets/images/brief-skincare.svg" alt="A premium skincare portfolio brief"></figure></div></section>
-  <section class="dashboard-workbench"><article class="workbench-panel"><h2>This week</h2><div class="featured-session"><time>${escapeHTML(focus?.date || '')}</time><div><h3>${escapeHTML(focus?.title || 'Course updates')}</h3><p>${escapeHTML(focus?.description || '')}</p>${routeLink('schedule', 'Open calendar →')}</div></div></article><article class="workbench-panel"><h2>From the studio</h2><div class="dashboard-stack">${courseData.announcements.slice(0, 2).map(announcementCard).join('') || emptyState()}</div></article></section>
-  <div class="dashboard-columns"><section><div class="section-heading"><h2>Upcoming deadlines</h2>${routeLink('schedule', 'Calendar')}</div><div class="deadline-list">${deadlines.map(deadlineCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>Course rooms</h2></div><div class="quick-links">${routeLink('group-project', 'Group project <span>→</span>')}${routeLink('final-portfolio', 'Final portfolio <span>→</span>')}${routeLink('resources', 'Resources <span>→</span>')}${routeLink('feedback', 'Book feedback <span>→</span>')}</div></section></div>`;
+  return `<section class="dashboard-masthead"><div class="dashboard-masthead-copy"><div><p class="dashboard-masthead-meta">${escapeHTML(courseData.course.term)} · ${text('labels.courseHandbook')}</p><h1>${escapeHTML(courseData.course.title)}</h1><p>${escapeHTML(courseData.course.description)}</p></div><div>${routeLink('brief-library', 'dashboard.enterBriefLibrary')}</div></div><div class="dashboard-image-grid"><figure><img src="assets/images/brief-hotel.svg" alt="${text('images.hotelAlt')}"></figure><figure><img src="assets/images/brief-eyewear.svg" alt="${text('images.eyewearAlt')}"></figure><figure><img src="assets/images/brief-skincare.svg" alt="${text('images.skincareAlt')}"></figure></div></section>
+  <section class="dashboard-workbench"><article class="workbench-panel"><h2>${text('dashboard.thisWeek')}</h2><div class="featured-session"><time>${escapeHTML(focus?.date || '')}</time><div><h3>${escapeHTML(focus?.title || uiValue('dashboard.courseUpdates'))}</h3><p>${escapeHTML(focus?.description || '')}</p>${routeLink('schedule', 'dashboard.openCalendar')}</div></div></article><article class="workbench-panel"><h2>${text('dashboard.fromStudio')}</h2><div class="dashboard-stack">${courseData.announcements.slice(0, 2).map(announcementCard).join('') || emptyState()}</div></article></section>
+  <div class="dashboard-columns"><section><div class="section-heading"><h2>${text('dashboard.upcomingDeadlines')}</h2>${routeLink('schedule', 'dashboard.calendar')}</div><div class="deadline-list">${deadlines.map(deadlineCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>${text('dashboard.courseRooms')}</h2></div><div class="quick-links">${routeLink('group-project', 'nav.groupProject')}${routeLink('final-portfolio', 'nav.finalPortfolio')}${routeLink('resources', 'nav.resources')}${routeLink('feedback', 'nav.bookFeedback')}</div></section></div>`;
 }
 function parseCourseDate(value) {
   const [day, monthName] = value.split(' ');
@@ -108,32 +67,40 @@ function calendarMonth(year, month) {
     const day = index - start + 1;
     if (index < start) return '<div class="calendar-cell empty"></div>';
     const items = events.filter(event => parseCourseDate(event.date).day === day);
-    return `<div class="calendar-cell"><span class="calendar-date">${day}</span>${items.map(event => `<article class="calendar-event ${escapeHTML(event.type)}"><small>${escapeHTML(titleize(event.type))} · ${escapeHTML(event.time)}</small>${escapeHTML(event.title)}</article>`).join('')}</div>`;
+    return `<div class="calendar-cell"><span class="calendar-date">${day}</span>${items.map(event => `<article class="calendar-event ${escapeHTML(event.type)}"><small>${eventTypeLabel(event.type)} · ${escapeHTML(event.time)}</small>${escapeHTML(event.title)}</article>`).join('')}</div>`;
   });
   while (cells.length % 7) cells.push('<div class="calendar-cell empty"></div>');
-  return `<section class="calendar-month"><header class="calendar-month-title"><h2>${new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month, 1))}</h2><span>${year}</span></header><div class="calendar-grid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => `<div class="calendar-day-name">${day}</div>`).join('')}${cells.join('')}</div></section>`;
+  return `<section class="calendar-month"><header class="calendar-month-title"><h2>${text(`calendar.months.${month}`)}</h2><span>${year}</span></header><div class="calendar-grid">${courseData.ui.calendar.weekdays.map(day => `<div class="calendar-day-name">${escapeHTML(day)}</div>`).join('')}${cells.join('')}</div></section>`;
 }
 function renderSchedule() {
-  return `${pageHeader('The semester', 'Course schedule', 'See every lecture, workshop, guest session and deadline in the calendar. Open a week below for its full details.')}
-  <div class="calendar-legend"><span class="calendar-event lecture">Lecture</span><span class="calendar-event workshop">Workshop / lab</span><span class="calendar-event guest-lecture">Guest lecture</span><span class="calendar-event deadline">Deadline</span></div><section class="calendar-wrap">${[0, 1].map(month => calendarMonth(2026, month)).join('')}</section>
-  <section class="timeline">${courseData.schedule.map((week, index) => `<details class="week" ${index === 0 ? 'open' : ''}><summary><span class="week-number">Week ${String(week.week).padStart(2, '0')}</span><h2>${escapeHTML(week.title)}</h2><span class="week-date">${escapeHTML(week.dateRange)}</span></summary><div class="week-body">${week.events.map(eventCard).join('')}</div></details>`).join('')}</section>
-  <section style="margin-top:54px"><div class="section-heading"><h2>Guest lecturers</h2></div><div class="guest-grid">${courseData.guestLecturers.map(guestCard).join('')}</div></section>`;
+  return `${pageHeader('schedule')}
+  <div class="calendar-legend"><span class="calendar-event lecture">${eventTypeLabel('lecture')}</span><span class="calendar-event workshop">${text('eventTypes.workshopLab')}</span><span class="calendar-event guest-lecture">${eventTypeLabel('guest-lecture')}</span><span class="calendar-event deadline">${eventTypeLabel('deadline')}</span></div><section class="calendar-wrap">${[0, 1].map(month => calendarMonth(2026, month)).join('')}</section>
+  <section class="timeline">${courseData.schedule.map((week, index) => `<details class="week" ${index === 0 ? 'open' : ''}><summary><span class="week-number">${text('labels.week')} ${String(week.week).padStart(2, '0')}</span><h2>${escapeHTML(week.title)}</h2><span class="week-date">${escapeHTML(week.dateRange)}</span></summary><div class="week-body">${week.events.map(eventCard).join('')}</div></details>`).join('')}</section>
+  <section style="margin-top:54px"><div class="section-heading"><h2>${text('labels.guestLecturers')}</h2></div><div class="guest-grid">${courseData.guestLecturers.map(guestCard).join('')}</div></section>`;
 }
 function renderGroupProject() {
   const project = courseData.groupProject;
-  return `${pageHeader('Studio collaboration', 'Group project', 'A concentrated team project that asks you to make a clear creative response together.')}
-  <div class="info-layout"><article class="rich-content"><h2>Overview</h2><p>${escapeHTML(project.overview)}</p><h3>Timeline</h3><ul>${project.timeline.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul><h3>Deliverables</h3><ul>${project.deliverables.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul></article><aside class="info-card"><h3>Assessment</h3><p>${escapeHTML(project.assessment)}</p></aside></div><section style="margin-top:54px"><div class="section-heading"><h2>Project scenarios</h2></div><div class="scenario-grid">${project.scenarios.map(scenarioCard).join('')}</div></section>${faq(project.faq)}`;
+  return `${pageHeader('groupProject')}
+  <div class="info-layout"><article class="rich-content"><h2>${text('labels.overview')}</h2><p>${escapeHTML(project.overview)}</p><h3>${text('labels.timeline')}</h3><ul>${project.timeline.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul><h3>${text('labels.deliverables')}</h3><ul>${project.deliverables.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul></article><aside class="info-card"><h3>${text('labels.assessment')}</h3><p>${escapeHTML(project.assessment)}</p></aside></div><section style="margin-top:54px"><div class="section-heading"><h2>${text('labels.projectScenarios')}</h2></div><div class="scenario-grid">${project.scenarios.map(scenarioCard).join('')}</div></section>${faq(project.faq)}`;
 }
 function renderFinalPortfolio() {
   const portfolio = courseData.finalPortfolio;
-  return `${pageHeader('Your point of view', 'Final portfolio', 'An edited, accessible record of your work and the creative practice you are building.')}
-  <div class="info-layout"><article class="rich-content"><h2>Overview</h2><p>${escapeHTML(portfolio.overview)}</p><h3>Portfolio structure</h3><ul>${portfolio.structure.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul><h3>Submission</h3><p>${escapeHTML(portfolio.submission)}</p></article><aside class="info-card"><h3>Assessment</h3><p>${escapeHTML(portfolio.assessment)}</p><a class="button" href="#brief-library" data-route="brief-library" style="margin-top:18px">Browse brief projects</a></aside></div>${faq(portfolio.faq)}`;
+  return `${pageHeader('finalPortfolio')}
+  <div class="info-layout"><article class="rich-content"><h2>${text('labels.overview')}</h2><p>${escapeHTML(portfolio.overview)}</p><h3>${text('labels.portfolioStructure')}</h3><ul>${portfolio.structure.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul><h3>${text('labels.submission')}</h3><p>${escapeHTML(portfolio.submission)}</p></article><aside class="info-card"><h3>${text('labels.assessment')}</h3><p>${escapeHTML(portfolio.assessment)}</p><a class="button" href="#brief-library" data-route="brief-library" style="margin-top:18px">${text('buttons.browseBriefProjects')}</a></aside></div>${faq(portfolio.faq)}`;
 }
-function renderBriefLibrary() { return `${pageHeader('Choose a direction', 'Portfolio brief library', 'Use one of these open briefs to create a self-initiated project with a clear purpose and a useful constraint.')}<div class="brief-grid">${courseData.portfolioBriefs.map(briefCard).join('')}</div>`; }
-function renderResources() { return `${pageHeader('Useful by design', 'Resources', 'Slides, templates, references and practical tools collected for the course.')}<div class="resource-grid">${courseData.resources.map(resource => `<article class="resource-card"><div class="resource-icon">${escapeHTML(resource.icon)}</div><span class="tag">${escapeHTML(resource.category)}</span><h3>${escapeHTML(resource.title)}</h3><p>${escapeHTML(resource.description)}</p><a class="button" href="${escapeHTML(resource.url)}" ${resource.url.startsWith('http') ? 'target="_blank" rel="noreferrer"' : ''}>Open resource ↗</a></article>`).join('')}</div>`; }
-function renderFeedback() { return `${pageHeader('Make progress together', 'Book feedback', 'Use a feedback slot to unblock a decision, review work in progress or talk through your final portfolio.')}<section class="feedback-card"><h2>Bring the question you cannot answer alone.</h2><p>Feedback works best when you bring a specific decision, an unfinished draft or a direction you want to test. Book a 20-minute slot and include a link to anything useful beforehand.</p><div class="booking-placeholder"><strong>Outlook Bookings</strong><br>Replace <code>bookingUrl</code> in <code>content/course.md</code> with your published Outlook Booking link to embed or launch your booking page.<br><br><a class="button" href="${escapeHTML(courseData.course.bookingUrl)}" target="_blank" rel="noreferrer">Open booking page ↗</a></div></section>${faq([{question:'What should I bring?',answer:'A link, a rough deck, a few images or simply a clear question. Work in progress is always welcome.'},{question:'I cannot find a slot.',answer:`Email ${courseData.course.feedbackEmail} with your availability and a short description of what you need.`}])}`; }
+function renderBriefLibrary() { return `${pageHeader('briefLibrary')}<div class="brief-grid">${courseData.portfolioBriefs.map(briefCard).join('')}</div>`; }
+function renderResources() { return `${pageHeader('resources')}<div class="resource-grid">${courseData.resources.map(resource => `<article class="resource-card"><div class="resource-icon">${escapeHTML(resource.icon)}</div><span class="tag">${escapeHTML(resource.category)}</span><h3>${escapeHTML(resource.title)}</h3><p>${escapeHTML(resource.description)}</p><a class="button" href="${escapeHTML(resource.url)}" ${resource.url.startsWith('http') ? 'target="_blank" rel="noreferrer"' : ''}>${text('buttons.openResource')}</a></article>`).join('')}</div>`; }
+function renderFeedback() { return `${pageHeader('feedback')}<section class="feedback-card"><h2>${text('feedback.heading')}</h2><p>${text('feedback.intro')}</p><div class="booking-placeholder"><strong>${text('feedback.bookingService')}</strong><br>${text('feedback.bookingInstructions')}<br><br><a class="button" href="${escapeHTML(courseData.course.bookingUrl)}" target="_blank" rel="noreferrer">${text('buttons.openBookingPage')}</a></div></section>${faq([{question: uiValue('feedback.faqBringQuestion'),answer:uiValue('feedback.faqBringAnswer')},{question:uiValue('feedback.faqSlotsQuestion'),answer:uiValue('feedback.faqSlotsAnswer').replace('{email}', courseData.course.feedbackEmail)}])}`; }
 
 const renderers = { dashboard: renderDashboard, schedule: renderSchedule, 'group-project': renderGroupProject, 'final-portfolio': renderFinalPortfolio, 'brief-library': renderBriefLibrary, resources: renderResources, feedback: renderFeedback };
+function hydrateStaticCopy() {
+  document.querySelectorAll('[data-ui]').forEach(element => { element.textContent = uiValue(element.dataset.ui, element.textContent); });
+  document.querySelectorAll('[data-ui-attribute]').forEach(element => {
+    const [attribute, key] = element.dataset.uiAttribute.split(':');
+    element.setAttribute(attribute, uiValue(key, element.getAttribute(attribute)));
+  });
+  document.title = uiValue('chrome.documentTitle', document.title);
+}
 function navigate(route = location.hash.slice(1) || 'dashboard') {
   const validRoute = renderers[route] ? route : 'dashboard';
   $('#app').innerHTML = renderers[validRoute]();
@@ -143,9 +110,9 @@ function navigate(route = location.hash.slice(1) || 'dashboard') {
   $('#app').focus({ preventScroll: true });
 }
 function showModal(content) { document.body.insertAdjacentHTML('beforeend', `<div class="modal" role="dialog" aria-modal="true"><div class="modal-panel"><button class="modal-close" aria-label="Close">×</button>${content}</div></div>`); $('.modal-close').focus(); }
-function openBrief(id) { const brief = courseData.portfolioBriefs.find(item => item.id === id); if (!brief) return; showModal(`<span class="tag">${escapeHTML(brief.category)} · ${escapeHTML(brief.difficulty)}</span><h2>${escapeHTML(brief.title)}</h2><p>${escapeHTML(brief.description)}</p><h3>Client</h3><p>${escapeHTML(brief.client)}</p><h3>Background</h3><p>${escapeHTML(brief.background)}</p><h3>Challenge</h3><p>${escapeHTML(brief.challenge)}</p><h3>Goals</h3><ul>${brief.goals.map(goal => `<li>${escapeHTML(goal)}</li>`).join('')}</ul><h3>Audience</h3><p>${escapeHTML(brief.audience)}</p><h3>Creative freedom</h3><p>${escapeHTML(brief.creativeFreedom)}</p><h3>Portfolio value</h3><p>${escapeHTML(brief.portfolioValue)}</p>`); }
-function openScenario(id) { const scenario = courseData.groupProject.scenarios.find(item => item.id === id); if (!scenario) return; showModal(`<span class="tag">${escapeHTML(scenario.category)}</span><h2>${escapeHTML(scenario.title)}</h2><p>${escapeHTML(scenario.brief)}</p><h3>Skills developed</h3><ul>${scenario.skills.map(skill => `<li>${escapeHTML(skill)}</li>`).join('')}</ul><h3>Estimated workload</h3><p>${escapeHTML(scenario.workload)}</p>`); }
-function openGuest(id) { const guest = courseData.guestLecturers.find(item => item.id === id); if (!guest) return; showModal(`<span class="tag">Guest lecture · ${escapeHTML(guest.date)}</span><h2>${escapeHTML(guest.name)}</h2><p><strong>${escapeHTML(guest.role)}, ${escapeHTML(guest.company)}</strong></p><p>${escapeHTML(guest.bio)}</p><h3>${escapeHTML(guest.lectureTitle)}</h3><p>${escapeHTML(guest.lectureDescription)}</p><h3>Learning outcomes</h3><ul>${guest.learningOutcomes.map(outcome => `<li>${escapeHTML(outcome)}</li>`).join('')}</ul><h3>Details</h3><p>${escapeHTML(guest.date)} · ${escapeHTML(guest.time)} · ${escapeHTML(guest.room)}</p><p><a href="${escapeHTML(guest.website)}" target="_blank" rel="noreferrer">Website</a> · <a href="${escapeHTML(guest.instagram)}" target="_blank" rel="noreferrer">Instagram</a> · <a href="${escapeHTML(guest.linkedin)}" target="_blank" rel="noreferrer">LinkedIn</a></p>`); }
+function openBrief(id) { const brief = courseData.portfolioBriefs.find(item => item.id === id); if (!brief) return; showModal(`<span class="tag">${escapeHTML(brief.category)} · ${escapeHTML(brief.difficulty)}</span><h2>${escapeHTML(brief.title)}</h2><p>${escapeHTML(brief.description)}</p><h3>${text('labels.client')}</h3><p>${escapeHTML(brief.client)}</p><h3>${text('labels.background')}</h3><p>${escapeHTML(brief.background)}</p><h3>${text('labels.challenge')}</h3><p>${escapeHTML(brief.challenge)}</p><h3>${text('labels.goals')}</h3><ul>${brief.goals.map(goal => `<li>${escapeHTML(goal)}</li>`).join('')}</ul><h3>${text('labels.audience')}</h3><p>${escapeHTML(brief.audience)}</p><h3>${text('labels.creativeFreedom')}</h3><p>${escapeHTML(brief.creativeFreedom)}</p><h3>${text('labels.portfolioValue')}</h3><p>${escapeHTML(brief.portfolioValue)}</p>`); }
+function openScenario(id) { const scenario = courseData.groupProject.scenarios.find(item => item.id === id); if (!scenario) return; showModal(`<span class="tag">${escapeHTML(scenario.category)}</span><h2>${escapeHTML(scenario.title)}</h2><p>${escapeHTML(scenario.brief)}</p><h3>${text('labels.skillsDeveloped')}</h3><ul>${scenario.skills.map(skill => `<li>${escapeHTML(skill)}</li>`).join('')}</ul><h3>${text('labels.estimatedWorkload')}</h3><p>${escapeHTML(scenario.workload)}</p>`); }
+function openGuest(id) { const guest = courseData.guestLecturers.find(item => item.id === id); if (!guest) return; showModal(`<span class="tag">${text('eventTypes.guest-lecture')} · ${escapeHTML(guest.date)}</span><h2>${escapeHTML(guest.name)}</h2><p><strong>${escapeHTML(guest.role)}, ${escapeHTML(guest.company)}</strong></p><p>${escapeHTML(guest.bio)}</p><h3>${escapeHTML(guest.lectureTitle)}</h3><p>${escapeHTML(guest.lectureDescription)}</p><h3>${text('labels.learningOutcomes')}</h3><ul>${guest.learningOutcomes.map(outcome => `<li>${escapeHTML(outcome)}</li>`).join('')}</ul><h3>${text('labels.details')}</h3><p>${escapeHTML(guest.date)} · ${escapeHTML(guest.time)} · ${escapeHTML(guest.room)}</p><p><a href="${escapeHTML(guest.website)}" target="_blank" rel="noreferrer">${text('labels.website')}</a> · <a href="${escapeHTML(guest.instagram)}" target="_blank" rel="noreferrer">${text('labels.instagram')}</a> · <a href="${escapeHTML(guest.linkedin)}" target="_blank" rel="noreferrer">${text('labels.linkedin')}</a></p>`); }
 document.addEventListener('click', event => {
   const route = event.target.closest('[data-route]'); if (route) { event.preventDefault(); location.hash = route.dataset.route; }
   const brief = event.target.closest('[data-brief]'); if (brief) openBrief(brief.dataset.brief);
@@ -157,4 +124,4 @@ document.addEventListener('click', event => {
 window.addEventListener('hashchange', () => navigate());
 document.addEventListener('keydown', event => { if (event.key === 'Escape') $('.modal')?.remove(); });
 
-loadCourseData().then(data => { courseData = data; navigate(); }).catch(error => { $('#app').innerHTML = `<div class="empty-state"><p>Course content could not load.</p><span>${escapeHTML(error.message)}</span></div>`; });
+loadCourseData().then(data => { courseData = data; hydrateStaticCopy(); navigate(); }).catch(error => { $('#app').innerHTML = `<div class="empty-state"><p>Course content could not load.</p><span>${escapeHTML(error.message)}</span></div>`; });

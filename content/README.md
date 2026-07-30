@@ -1,38 +1,14 @@
-# Edit course content
+# Edit all course content
 
-The two files in this folder are designed to be changed directly in GitHub.
-Open a file, press the pencil icon (**Edit this file**), make the change and
-choose **Commit changes**. Vercel publishes the update automatically once the
-repository is connected.
+[`course.md`](course.md) is the single source for all text displayed on the
+site: navigation, headings, schedule, guests, briefs, project details,
+resources, announcements and feedback copy.
 
-## Regular updates
+Open it in GitHub, click the pencil icon (**Edit this file**), edit the text in
+the JSON block, then choose **Commit changes**. Vercel publishes the update
+automatically from `main`.
 
-- [Course title, term, introduction, email and booking link](course.md)
-- [Dashboard announcements](announcements.md)
-
-## Announcements
-
-Each announcement has a heading, a date and an optional pinned state:
-
-```md
-## Title visible on the dashboard
-Date: 15 Jan 2026 | Pinned: yes
-
-Write the announcement here.
-```
-
-Put the newest announcement first. Only use `Pinned: yes` when it should be
-marked as important.
-
-## Course settings
-
-The values between the `---` lines in `course.md` control the course details.
-Leave the names before the colon unchanged, for example:
-
-```md
-term: Autumn term 2026
-bookingUrl: https://example.com/booking
-```
-
-The schedule, briefs and resources still use `data.json`; they can be moved to
-the same Markdown pattern in a later pass if their content needs frequent edits.
+Keep the JSON syntax intact: quotation marks, commas, square brackets and field
+names must stay in place. Use GitHub's search in the file to jump to the text
+you want to change. If a mistake is committed, GitHub's **History** view lets
+you restore the earlier version.

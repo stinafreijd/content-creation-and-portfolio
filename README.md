@@ -14,14 +14,9 @@ Then visit `http://localhost:8000`.
 
 ## Content updates
 
-The routinely updated course details and dashboard notices live in Markdown:
+All text shown on the site lives in one Markdown source: [`content/course.md`](content/course.md). Open it in GitHub, press the pencil icon (**Edit this file**), edit the text in the JSON block and commit to `main`; Vercel deploys the update automatically. See [`content/README.md`](content/README.md) for the editing rules.
 
-- [`content/course.md`](content/course.md) — title, term, introduction, email and booking link
-- [`content/announcements.md`](content/announcements.md) — dashboard notices
-
-Open either file in GitHub and press the pencil icon (**Edit this file**). Commit the change to `main`; Vercel deploys it automatically. See [`content/README.md`](content/README.md) for the exact editing format.
-
-The structured schedule, guest profiles, briefs, project details and resources remain in [`data.json`](data.json). The app reads everything through one adapter function in [`app.js`](app.js), so the remaining sections can be migrated in the same way when they need frequent editing.
+[`data.json`](data.json) remains in the repository only as a technical backup of the original structure. The public site does not load it.
 
 The hidden [`admin/`](admin/) area is a local-only legacy editor. It saves a preview copy in the teacher's browser and can export an updated `data.json` ready to commit.
 
@@ -46,8 +41,8 @@ Every commit to `main` now creates a production deployment. Pull requests get a 
 index.html       Public single-page course hub
 style.css        Public design system and responsive layout
 app.js           Rendering, routing, search and content adapter
-data.json        Structured content source (schedule, briefs, resources)
-content/         Markdown files edited directly in GitHub
+data.json        Unused technical backup of the original content structure
+content/course.md Single editable Markdown source for all site text
 assets/images/   Local portraits and brief imagery
 assets/icons/    Reserved for interface icons
 admin/           Course editor (not linked publicly)

@@ -8,10 +8,10 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
 {
   "course": {
     "title": "Content Creation & Portfolio",
-    "term": "Spring term 2026",
+    "term": "Autum 2026",
     "welcome": "Make work with enough clarity, craft and character to earn a permanent place in your portfolio.",
     "description": "A practical studio course about building considered creative work, documenting your process and presenting it with confidence.",
-    "feedbackEmail": "contentcreation@university.se",
+    "feedbackEmail": "stina.freid@ju.se",
     "bookingUrl": "https://outlook.office.com/bookwithme/"
   },
   "schedule": [
@@ -464,15 +464,8 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
       "id": "welcome",
       "title": "Welcome to the course hub",
       "body": "This is now the home for briefs, schedule updates, resources and feedback bookings. Canvas is used only for submissions, grading and official announcements.",
-      "date": "15 Jan 2026",
+      "date": "31 aug 2026",
       "pinned": true
-    },
-    {
-      "id": "critique",
-      "title": "Bring work in progress to the week 3 clinic",
-      "body": "No need for polished work. A sketch, contact sheet or half-formed direction is enough to have a useful conversation.",
-      "date": "30 Jan 2026",
-      "pinned": false
     }
   ],
   "ui": {

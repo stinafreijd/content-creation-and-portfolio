@@ -48,11 +48,22 @@ function scenarioCard(scenario) {
 function faq(items = []) { return `<section class="faq"><div class="section-heading"><h2>${text('labels.faq')}</h2></div>${items.map(item => `<details><summary>${escapeHTML(item.question)}</summary><p>${escapeHTML(item.answer)}</p></details>`).join('')}</section>`; }
 
 function renderDashboard() {
-  const deadlines = courseData.schedule.flatMap(week => week.events).filter(event => event.type === 'deadline').slice(0, 3);
-  const focus = courseData.schedule[0]?.events[0];
-  return `<section class="dashboard-masthead"><div class="dashboard-masthead-copy"><div><p class="dashboard-masthead-meta">${escapeHTML(courseData.course.term)} · ${text('labels.courseHandbook')}</p><h1>${escapeHTML(courseData.course.title)}</h1><p>${escapeHTML(courseData.course.description)}</p></div><div>${routeLink('brief-library', 'dashboard.enterBriefLibrary')}</div></div><div class="dashboard-image-grid"><figure><img src="assets/images/brief-hotel.svg" alt="${text('images.hotelAlt')}"></figure><figure><img src="assets/images/brief-eyewear.svg" alt="${text('images.eyewearAlt')}"></figure><figure><img src="assets/images/brief-skincare.svg" alt="${text('images.skincareAlt')}"></figure></div></section>
-  <section class="dashboard-workbench"><article class="workbench-panel"><h2>${text('dashboard.thisWeek')}</h2><div class="featured-session"><time>${escapeHTML(focus?.date || '')}</time><div><h3>${escapeHTML(focus?.title || uiValue('dashboard.courseUpdates'))}</h3><p>${escapeHTML(focus?.description || '')}</p>${routeLink('schedule', 'dashboard.openCalendar')}</div></div></article><article class="workbench-panel"><h2>${text('dashboard.fromStudio')}</h2><div class="dashboard-stack">${courseData.announcements.slice(0, 2).map(announcementCard).join('') || emptyState()}</div></article></section>
-  <div class="dashboard-columns"><section><div class="section-heading"><h2>${text('dashboard.upcomingDeadlines')}</h2>${routeLink('schedule', 'dashboard.calendar')}</div><div class="deadline-list">${deadlines.map(deadlineCard).join('') || emptyState()}</div></section><section><div class="section-heading"><h2>${text('dashboard.courseRooms')}</h2></div><div class="quick-links">${routeLink('group-project', 'nav.groupProject')}${routeLink('final-portfolio', 'nav.finalPortfolio')}${routeLink('resources', 'nav.resources')}${routeLink('feedback', 'nav.bookFeedback')}</div></section></div>`;
+  const sessions = courseData.schedule.flatMap(week => week.events);
+  const eventDate = event => {
+    const parsed = parseCourseDate(event.date);
+    return parsed ? new Date(courseData.course.calendarYear, parsed.month, parsed.day) : null;
+  };
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const nextSession = sessions.find(event => eventDate(event) >= today) || sessions[0];
+  const firstSession = sessions[0];
+  const lastSession = sessions.at(-1);
+  const coursePeriod = firstSession && lastSession ? `${firstSession.date}–${lastSession.date}` : '';
+
+  return `<section class="course-overview"><header class="overview-header"><p class="eyebrow">${escapeHTML(courseData.course.term)} · ${text('labels.courseHandbook')}</p><h1>${escapeHTML(courseData.course.title)}</h1><p>${escapeHTML(courseData.course.description)}</p></header>
+  <section class="next-session" aria-labelledby="next-session-title"><div><p class="eyebrow" id="next-session-title">${text('dashboard.nextSession')}</p><h2>${escapeHTML(nextSession?.title || uiValue('dashboard.noSessions'))}</h2><p>${escapeHTML(nextSession?.description || '')}</p></div><dl><div><dt>${text('dashboard.date')}</dt><dd>${escapeHTML(nextSession?.date || '—')}</dd></div><div><dt>${text('dashboard.time')}</dt><dd>${escapeHTML(nextSession?.time || '—')}</dd></div><div><dt>${text('dashboard.room')}</dt><dd>${escapeHTML(nextSession?.room || '—')}</dd></div></dl></section>
+  <section class="course-facts" aria-label="${text('dashboard.courseOverview')}"><div><dt>${text('dashboard.coursePeriod')}</dt><dd>${escapeHTML(coursePeriod)}</dd></div><div><dt>${text('dashboard.teachingSessions')}</dt><dd>${sessions.length}</dd></div><div><dt>${text('dashboard.courseWeeks')}</dt><dd>${courseData.schedule.length}</dd></div></section>
+  <section class="schedule-overview"><div class="section-heading"><h2>${text('dashboard.scheduleOverview')}</h2>${routeLink('schedule', 'dashboard.openFullSchedule')}</div><div class="week-overview-grid">${courseData.schedule.map(week => `<article class="week-overview-card"><p class="eyebrow">${text('labels.week')} ${String(week.week).padStart(2, '0')}</p><h3>${escapeHTML(week.title)}</h3><p>${escapeHTML(week.dateRange)}</p><span>${week.events.length} ${text('dashboard.sessions')}</span></article>`).join('')}</div></section></section>`;
 }
 function parseCourseDate(value) {
   const [day, monthName] = value.split(' ');

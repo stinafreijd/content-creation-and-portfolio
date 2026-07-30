@@ -498,7 +498,19 @@ Tip: use GitHub's search in this file to find any wording shown on the site.
       "fromStudio": "From the studio",
       "upcomingDeadlines": "Upcoming deadlines",
       "calendar": "Calendar",
-      "courseRooms": "Course rooms"
+      "courseRooms": "Course rooms",
+      "nextSession": "Next session",
+      "noSessions": "No scheduled sessions",
+      "date": "Date",
+      "time": "Time",
+      "room": "Room",
+      "courseOverview": "Course overview",
+      "coursePeriod": "Course period",
+      "teachingSessions": "Teaching sessions",
+      "courseWeeks": "Course weeks",
+      "scheduleOverview": "Course schedule at a glance",
+      "openFullSchedule": "Open full schedule →",
+      "sessions": "sessions"
     },
     "pages": {
       "schedule": {

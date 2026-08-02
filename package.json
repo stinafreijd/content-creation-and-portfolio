@@ -1,0 +1,13 @@
+{
+  "name": "content-creation-and-portfolio",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Markdown-first course handbook",
+  "scripts": {
+    "build": "node build.mjs",
+    "validate:content": "node build.mjs --check"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,1 +1,1 @@
-// Kept intentionally small: pages are generated during the Vercel build.
+window.lucide?.createIcons({ attrs: { 'aria-hidden': 'true', focusable: 'false' } });
